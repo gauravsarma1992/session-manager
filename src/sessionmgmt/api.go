@@ -1,10 +1,21 @@
 package sessionmgmt
 
-import "github.com/gin-gonic/gin"
+import (
+	"github.com/gin-gonic/gin"
+)
 
 func (server *Server) GetSessionHandler(c *gin.Context) {
+	sessionId := c.Param("id")
+	session, err := server.sessionStore.GetSession(TokenT(sessionId))
+	if err != nil {
+		c.JSON(500, gin.H{
+			"message": err.Error(),
+		})
+		return
+	}
 	c.JSON(200, gin.H{
 		"message": "success",
+		"session": session,
 	})
 	return
 }
