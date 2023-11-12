@@ -2,6 +2,7 @@ package sessionmgmt
 
 import (
 	"fmt"
+	"log"
 
 	"github.com/gin-gonic/gin"
 )
@@ -20,9 +21,10 @@ type (
 
 func NewServer(config *Config) (server *Server, err error) {
 	if config == nil {
-		config = &Config{}
-		config.Host = "127.0.0.1"
-		config.Port = "9090"
+		config = &Config{
+			Host: "127.0.0.1",
+			Port: "8090",
+		}
 	}
 
 	server = &Server{
@@ -35,18 +37,23 @@ func NewServer(config *Config) (server *Server, err error) {
 }
 
 func (server *Server) setupRoutes() (err error) {
-	server.apiEngine.GET("/sessions/:id", server.GetSessionHandler)
-	server.apiEngine.POST("/sessions", server.CreateSessionHandler)
-	server.apiEngine.DELETE("/sessions/:id", server.DeleteSessionHandler)
+	server.apiEngine.GET("/ping", func(c *gin.Context) {
+		c.JSON(200, gin.H{
+			"message": "pong",
+		})
+	})
+	server.apiEngine.GET("/api/sessions/:id", server.GetSessionHandler)
+	server.apiEngine.POST("/api/sessions", server.CreateSessionHandler)
+	server.apiEngine.DELETE("/api/sessions/:id", server.DeleteSessionHandler)
 	return
 }
 
 func (server *Server) Run() (err error) {
-	err = server.apiEngine.Run(
-		fmt.Sprintf("%s:%s",
-			server.config.Host,
-			server.config.Port,
-		),
+	serverAddress := fmt.Sprintf("%s:%s",
+		server.config.Host,
+		server.config.Port,
 	)
+	log.Println("Starting server on", serverAddress)
+	err = server.apiEngine.Run(serverAddress)
 	return
 }
