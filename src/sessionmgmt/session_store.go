@@ -42,7 +42,7 @@ func NewSessionStore(scStoreCfg *SessionsStoreConfig) (sStore *SessionStore, err
 	return
 }
 
-func (sStore *SessionStore) AddSession(token TokenT, obj *SessionObj) (session *Session, err error) {
+func (sStore *SessionStore) AddSession(token TokenT, obj SessionObj) (session *Session, err error) {
 
 	sStore.storeLock.Lock()
 	defer sStore.storeLock.Unlock()
@@ -55,7 +55,7 @@ func (sStore *SessionStore) AddSession(token TokenT, obj *SessionObj) (session *
 		return
 	}
 
-	if session, err = NewSession(nil); err != nil {
+	if session, err = NewSession(token, obj, nil); err != nil {
 		return
 	}
 	sStore.store[token] = session
@@ -82,6 +82,16 @@ func (sStore *SessionStore) RemoveSession(token TokenT) (err error) {
 	}
 
 	delete(sStore.store, token)
+
+	return
+}
+
+func (sStore *SessionStore) RemoveAllSessions() (err error) {
+
+	sStore.storeLock.Lock()
+	defer sStore.storeLock.Unlock()
+
+	sStore.store = make(map[TokenT]*Session)
 
 	return
 }

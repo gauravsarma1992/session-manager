@@ -11,13 +11,13 @@ type (
 	}
 
 	Session struct {
-		Token TokenT
+		Token TokenT `json:"token"`
 
-		CreatedAt      time.Time
-		LastAccessedAt time.Time
+		CreatedAt      time.Time `json:"created_at"`
+		LastAccessedAt time.Time `json:"last_accessed_at"`
 
-		config     *SessionConfig
-		sessionObj *SessionObj
+		config     *SessionConfig `json:"-"`
+		SessionObj SessionObj     `json:"object"`
 	}
 
 	SessionObj interface{}
@@ -31,9 +31,13 @@ func DefaultSessionConfig() (sc *SessionConfig) {
 	return
 }
 
-func NewSession(sCfg *SessionConfig) (session *Session, err error) {
+func NewSession(token TokenT, obj SessionObj, sCfg *SessionConfig) (session *Session, err error) {
 	session = &Session{
-		config: sCfg,
+		Token:          token,
+		SessionObj:     obj,
+		config:         sCfg,
+		CreatedAt:      time.Now().UTC(),
+		LastAccessedAt: time.Now().UTC(),
 	}
 	if session.config == nil {
 		session.config = DefaultSessionConfig()
