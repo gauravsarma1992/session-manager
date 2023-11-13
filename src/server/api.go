@@ -2,11 +2,13 @@ package sessionmgmt
 
 import (
 	"github.com/gin-gonic/gin"
+
+	"github.com/gauravsarma1992/src/sessionmgmt"
 )
 
 func (server *Server) GetSessionHandler(c *gin.Context) {
 	sessionId := c.Param("id")
-	session, err := server.sessionStore.GetSession(TokenT(sessionId))
+	session, err := server.sessionStore.GetSession(sessionmgmt.TokenT(sessionId))
 	if err != nil {
 		c.JSON(500, gin.H{
 			"message": err.Error(),

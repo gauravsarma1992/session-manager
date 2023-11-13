@@ -6,6 +6,8 @@ import (
 	"io/ioutil"
 	"net/http"
 	"time"
+
+	"github.com/gauravsarma1992/src/sessionmgmt"
 )
 
 var (
@@ -55,8 +57,8 @@ func MakeRequest(method, api string, payload interface{}) (resp *http.Response, 
 	return
 }
 
-func GetDummyUser() (user *User) {
-	user = &User{
+func GetDummyUser() (user *sessionmgmt.User) {
+	user = &sessionmgmt.User{
 		ID: "2",
 	}
 	return

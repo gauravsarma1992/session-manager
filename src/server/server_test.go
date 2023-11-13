@@ -5,6 +5,8 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+
+	"github.com/gauravsarma1992/src/sessionmgmt"
 )
 
 func TestServerStart(t *testing.T) {
@@ -22,7 +24,7 @@ func TestServerGetSessionFailure(t *testing.T) {
 
 func TestServerGetSessionSuccess(t *testing.T) {
 	server, _ := GetServer(false)
-	session, err := server.sessionStore.AddSession(TokenT("1"), GetDummyUser())
+	session, err := server.sessionStore.AddSession(sessionmgmt.TokenT("1"), GetDummyUser())
 	assert.Equal(t, err, nil)
 	resp, respBody, _ := MakeRequest(
 		"GET",

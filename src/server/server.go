@@ -5,12 +5,14 @@ import (
 	"log"
 
 	"github.com/gin-gonic/gin"
+
+	"github.com/gauravsarma1992/src/sessionmgmt"
 )
 
 type (
 	Server struct {
 		config       *Config
-		sessionStore *SessionStore
+		sessionStore *sessionmgmt.SessionStore
 		apiEngine    *gin.Engine
 	}
 	Config struct {
@@ -32,7 +34,7 @@ func NewServer(config *Config) (server *Server, err error) {
 		apiEngine: gin.Default(),
 	}
 	server.setupRoutes()
-	server.sessionStore, _ = NewSessionStore(nil)
+	server.sessionStore, _ = sessionmgmt.NewSessionStore(nil)
 	return
 }
 
