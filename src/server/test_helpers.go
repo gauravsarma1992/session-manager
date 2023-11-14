@@ -1,6 +1,7 @@
 package sessionmgmt
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -33,15 +34,26 @@ func GetServer(forceNew bool) (server *Server, err error) {
 
 func MakeRequest(method, api string, payload interface{}) (resp *http.Response, respBody map[string]interface{}, err error) {
 
+	var (
+		payloadB []byte
+	)
+
 	if ServerTest == nil {
 		GetServer(false)
+	}
+
+	if payload != nil {
+		if payloadB, err = json.Marshal(payload); err != nil {
+			return
+		}
+
 	}
 
 	req := &http.Request{}
 	client := &http.Client{}
 	url := fmt.Sprintf("%s/%s", BaseUrl, api)
 
-	if req, err = http.NewRequest(method, url, nil); err != nil {
+	if req, err = http.NewRequest(method, url, bytes.NewBuffer(payloadB)); err != nil {
 		return
 	}
 	if resp, err = client.Do(req); err != nil {

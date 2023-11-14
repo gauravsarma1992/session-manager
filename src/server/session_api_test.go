@@ -61,3 +61,32 @@ func TestServerRemoveSession(t *testing.T) {
 	)
 	assert.Equal(t, resp.StatusCode, 401)
 }
+
+func TestServerAddSession(t *testing.T) {
+	var (
+		err error
+	)
+	// Create the session
+	session := sessionmgmt.Session{
+		Token: sessionmgmt.TokenT("3434"),
+		SessionObj: sessionmgmt.User{
+			ID: "435",
+		},
+	}
+	resp, respBody, _ := MakeRequest(
+		"POST",
+		"api/sessions",
+		session,
+	)
+	assert.Equal(t, err, nil)
+	assert.Equal(t, resp.StatusCode, 200)
+	assert.Equal(t, respBody["message"], "success")
+
+	// Check if the session was created
+	resp, respBody, _ = MakeRequest(
+		"GET",
+		fmt.Sprintf("api/sessions/%s", session.Token),
+		nil,
+	)
+	assert.Equal(t, resp.StatusCode, 200)
+}

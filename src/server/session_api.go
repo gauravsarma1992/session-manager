@@ -24,6 +24,22 @@ func (server *Server) GetSessionHandler(c *gin.Context) {
 }
 
 func (server *Server) CreateSessionHandler(c *gin.Context) {
+	var (
+		err error
+	)
+	session := &sessionmgmt.Session{}
+	if err = c.ShouldBindJSON(session); err != nil {
+		c.JSON(500, gin.H{
+			"message": err.Error(),
+		})
+		return
+	}
+	if session, err = server.sessionStore.AddSession(session.Token, session.SessionObj); err != nil {
+		c.JSON(500, gin.H{
+			"message": err.Error(),
+		})
+		return
+	}
 	c.JSON(200, gin.H{
 		"message": "success",
 	})
