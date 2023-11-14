@@ -8,14 +8,15 @@ func (server *Server) GetSessionHandler(c *gin.Context) {
 	sessionId := c.Param("id")
 	session, err := server.sessionStore.GetSession(TokenT(sessionId))
 	if err != nil {
-		c.JSON(500, gin.H{
+		c.JSON(401, gin.H{
 			"message": err.Error(),
 		})
 		return
 	}
 	c.JSON(200, gin.H{
-		"message": "success",
-		"session": session,
+		"message":   "success",
+		"session":   session,
+		"is_active": session.IsActive(),
 	})
 	return
 }
@@ -28,6 +29,14 @@ func (server *Server) CreateSessionHandler(c *gin.Context) {
 }
 
 func (server *Server) DeleteSessionHandler(c *gin.Context) {
+	sessionId := c.Param("id")
+	err := server.sessionStore.RemoveSession(TokenT(sessionId))
+	if err != nil {
+		c.JSON(500, gin.H{
+			"message": err.Error(),
+		})
+		return
+	}
 	c.JSON(200, gin.H{
 		"message": "success",
 	})
