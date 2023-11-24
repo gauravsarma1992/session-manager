@@ -1,4 +1,4 @@
-package sessionmgmt
+package sessionserver
 
 import (
 	"bytes"
@@ -21,8 +21,8 @@ func GetServer(forceNew bool) (server *Server, err error) {
 		ServerTest, _ = NewServer(nil)
 		BaseUrl = fmt.Sprintf(
 			"http://%s:%s",
-			ServerTest.config.Host,
-			ServerTest.config.Port,
+			ServerTest.config.Server.Host,
+			ServerTest.config.Server.Port,
 		)
 
 		go ServerTest.Run()

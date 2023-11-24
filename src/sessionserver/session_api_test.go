@@ -1,4 +1,4 @@
-package sessionmgmt
+package sessionserver
 
 import (
 	"fmt"
@@ -6,7 +6,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/gauravsarma1992/src/sessionmgmt"
+	sessionmgmt "github.com/gauravsarma1992/src/sessionmgmt"
 )
 
 func TestServerStart(t *testing.T) {

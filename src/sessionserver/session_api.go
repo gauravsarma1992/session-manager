@@ -1,4 +1,4 @@
-package sessionmgmt
+package sessionserver
 
 import (
 	"github.com/gin-gonic/gin"

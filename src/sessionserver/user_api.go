@@ -1,4 +1,4 @@
-package sessionmgmt
+package sessionserver
 
 import (
 	"github.com/gin-gonic/gin"
@@ -21,6 +21,7 @@ func (server *Server) GetUserHandler(c *gin.Context) {
 }
 
 func (server *Server) CreateUserHandler(c *gin.Context) {
+
 	c.JSON(200, gin.H{
 		"message": "success",
 	})
