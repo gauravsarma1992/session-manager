@@ -71,7 +71,7 @@ func MakeRequest(method, api string, payload interface{}) (resp *http.Response, 
 
 func GetDummyUser() (user *sessionmgmt.User) {
 	user = &sessionmgmt.User{
-		ID: "2",
+		ID: 2,
 	}
 	return
 }

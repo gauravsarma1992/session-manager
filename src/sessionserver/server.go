@@ -43,7 +43,7 @@ func GetDefaultConfig() (config *Config) {
 	config.Db.Host = "127.0.0.1"
 	config.Db.Port = "3306"
 	config.Db.Username = "root"
-	config.Db.Password = "password"
+	config.Db.Password = ""
 	return
 }
 
@@ -75,7 +75,7 @@ func (server *Server) setupRoutes() (err error) {
 	server.apiEngine.GET("/api/users", server.GetUsersHandler)
 	server.apiEngine.GET("/api/users/:id", server.GetUserHandler)
 	server.apiEngine.POST("/api/users", server.CreateUserHandler)
-	server.apiEngine.PUT("/api/users", server.UpdateUserHandler)
+	server.apiEngine.PUT("/api/users/:id", server.UpdateUserHandler)
 	server.apiEngine.DELETE("/api/users/:id", server.DeleteUserHandler)
 	return
 }
@@ -95,6 +95,7 @@ func (server *Server) setupDb() (err error) {
 		panic(err)
 	}
 	server.Db = db
+	server.Db.AutoMigrate(&sessionmgmt.User{})
 	return
 }
 

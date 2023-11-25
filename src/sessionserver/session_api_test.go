@@ -70,7 +70,7 @@ func TestServerAddSession(t *testing.T) {
 	session := sessionmgmt.Session{
 		Token: sessionmgmt.TokenT("3434"),
 		SessionObj: sessionmgmt.User{
-			ID: "435",
+			ID: 435,
 		},
 	}
 	resp, respBody, _ := MakeRequest(
