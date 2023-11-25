@@ -1,6 +1,7 @@
 package sessionserver
 
 import (
+	"errors"
 	"strconv"
 
 	"github.com/gauravsarma1992/src/sessionmgmt"
@@ -80,8 +81,16 @@ func (server *Server) CreateUserHandler(c *gin.Context) {
 func (server *Server) UpdateUserHandler(c *gin.Context) {
 	var (
 		result *gorm.DB
+		userId int
 		err    error
 	)
+	userIdS := c.Param("id")
+	if userId, err = strconv.Atoi(userIdS); err != nil {
+		c.JSON(400, gin.H{
+			"message": "failure",
+			"error":   err.Error(),
+		})
+	}
 	reqUser := &sessionmgmt.User{}
 	if err = c.ShouldBindJSON(reqUser); err != nil {
 		c.JSON(400, gin.H{
@@ -90,7 +99,20 @@ func (server *Server) UpdateUserHandler(c *gin.Context) {
 		})
 		return
 	}
-	if result = server.Db.Save(reqUser); result.Error != nil {
+	user := &sessionmgmt.User{}
+	server.Db.First(user, userId)
+	if user.ID == 0 {
+		c.JSON(500, gin.H{
+			"message": "failure",
+			"error":   errors.New("User not found"),
+		})
+		return
+	}
+
+	user.Email = reqUser.Email
+	user.Mobile = reqUser.Password
+
+	if result = server.Db.Save(user); result.Error != nil {
 		c.JSON(500, gin.H{
 			"message": "failure",
 			"error":   result.Error.Error(),
@@ -99,6 +121,7 @@ func (server *Server) UpdateUserHandler(c *gin.Context) {
 	}
 	c.JSON(200, gin.H{
 		"message": "success",
+		"user":    user,
 	})
 	return
 }

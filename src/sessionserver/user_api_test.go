@@ -42,13 +42,11 @@ func testServerUpdateUser(user *sessionmgmt.User, t *testing.T) {
 	)
 	// Create the user
 	user.Mobile = "84343545555"
-	fmt.Println(user)
 	resp, respBody, err := MakeRequest(
 		"PUT",
 		fmt.Sprintf("api/users/%d", user.ID),
 		user,
 	)
-	fmt.Println(respBody)
 	assert.Equal(t, err, nil)
 	assert.Equal(t, resp.StatusCode, 200)
 	assert.Equal(t, respBody["message"], "success")
@@ -79,6 +77,6 @@ func TestUserFlow(t *testing.T) {
 	}
 	testServerAddUser(user, t)
 	testServerGetUser(user, t)
-	//testServerUpdateUser(user, t)
+	testServerUpdateUser(user, t)
 	testServerDeleteUser(user, t)
 }
