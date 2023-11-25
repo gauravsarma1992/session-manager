@@ -110,7 +110,7 @@ func (server *Server) UpdateUserHandler(c *gin.Context) {
 	}
 
 	user.Email = reqUser.Email
-	user.Mobile = reqUser.Password
+	user.Mobile = reqUser.Mobile
 
 	if result = server.Db.Save(user); result.Error != nil {
 		c.JSON(500, gin.H{

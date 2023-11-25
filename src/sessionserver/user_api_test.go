@@ -50,6 +50,7 @@ func testServerUpdateUser(user *sessionmgmt.User, t *testing.T) {
 	assert.Equal(t, err, nil)
 	assert.Equal(t, resp.StatusCode, 200)
 	assert.Equal(t, respBody["message"], "success")
+	assert.Equal(t, user.Mobile, respBody["user"].(map[string]interface{})["mobile"].(string))
 
 }
 
