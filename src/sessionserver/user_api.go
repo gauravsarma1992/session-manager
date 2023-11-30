@@ -10,6 +10,13 @@ import (
 	"gorm.io/gorm"
 )
 
+type (
+	LoginRequest struct {
+		Username string `json:"username"`
+		Password string `json:"password"`
+	}
+)
+
 func (server *Server) GetUsersHandler(c *gin.Context) {
 	var (
 		users  []*sessionmgmt.User
@@ -143,6 +150,37 @@ func (server *Server) DeleteUserHandler(c *gin.Context) {
 		c.JSON(500, gin.H{
 			"message": "failure",
 			"error":   result.Error.Error(),
+		})
+		return
+	}
+	c.JSON(200, gin.H{
+		"message": "success",
+	})
+	return
+}
+
+func (server *Server) LoginUserHandler(c *gin.Context) {
+	var (
+		err error
+	)
+	loginRequest := &LoginRequest{}
+	if err = c.ShouldBindJSON(loginRequest); err != nil {
+		c.JSON(400, gin.H{
+			"message": "failure",
+			"error":   err.Error(),
+		})
+		return
+	}
+	user := &sessionmgmt.User{}
+	reqUser := &sessionmgmt.User{
+		Username: loginRequest.Username,
+		Password: loginRequest.Password,
+	}
+	server.Db.Where("username = ?", reqUser.Username).First(&user)
+	if err = user.Validate(reqUser); err != nil {
+		c.JSON(500, gin.H{
+			"message": "failure",
+			"error":   err.Error(),
 		})
 		return
 	}

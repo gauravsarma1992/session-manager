@@ -75,6 +75,7 @@ func (server *Server) setupRoutes() (err error) {
 	server.apiEngine.GET("/api/users", server.GetUsersHandler)
 	server.apiEngine.GET("/api/users/:id", server.GetUserHandler)
 	server.apiEngine.POST("/api/users", server.CreateUserHandler)
+	server.apiEngine.POST("/api/users/login", server.LoginUserHandler)
 	server.apiEngine.PUT("/api/users/:id", server.UpdateUserHandler)
 	server.apiEngine.DELETE("/api/users/:id", server.DeleteUserHandler)
 	return

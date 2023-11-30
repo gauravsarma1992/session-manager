@@ -12,7 +12,7 @@ type (
 		gorm.Model
 
 		ID       uint   `json:"id" gorm:"primaryKey,autoIncrement"`
-		Username string `json:"username"`
+		Username string `json:"username" gorm:"unique"`
 		Password string `json:"-"`
 
 		Email  string `json:"email"`
@@ -23,19 +23,20 @@ type (
 )
 
 func (user *User) BeforeCreate(db *gorm.DB) (err error) {
-	//var (
-	//	passwordB []byte
-	//)
-	//if passwordB, err = bcrypt.GenerateFromPassword([]byte(user.Password), 30); err != nil {
-	//	return
-	//}
-	//user.Password = string(passwordB)
+	var (
+		passwordB []byte
+	)
+	if passwordB, err = bcrypt.GenerateFromPassword([]byte(user.Password), 4); err != nil {
+		return
+	}
+	user.Password = string(passwordB)
 	return
 }
 
 func (user *User) Validate(reqUser *User) (err error) {
-	if user.Username != reqUser.Password {
+	if user.Username != reqUser.Username {
 		err = errors.New("Username doesn't match")
+		return
 	}
 	if bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(reqUser.Password)); err != nil {
 		err = errors.New("Password doesn't match")

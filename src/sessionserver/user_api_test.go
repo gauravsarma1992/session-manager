@@ -55,15 +55,54 @@ func testServerUpdateUser(user *sessionmgmt.User, t *testing.T) {
 }
 
 func testServerDeleteUser(user *sessionmgmt.User, t *testing.T) {
-	// Delete the user
 	var (
 		err error
 	)
-	// Create the user
+	// Delete the user
 	resp, respBody, err := MakeRequest(
 		"DELETE",
 		fmt.Sprintf("api/users/%d", user.ID),
 		user,
+	)
+	assert.Equal(t, err, nil)
+	assert.Equal(t, resp.StatusCode, 200)
+	assert.Equal(t, respBody["message"], "success")
+
+}
+
+func testServerLoginUserSuccess(user *sessionmgmt.User, t *testing.T) {
+	var (
+		err error
+	)
+	loginRequest := &LoginRequest{
+		Username: user.Username,
+		Password: user.Password,
+	}
+	// Create the user
+	resp, respBody, err := MakeRequest(
+		"POST",
+		"api/users/login",
+		loginRequest,
+	)
+	assert.Equal(t, err, nil)
+	assert.Equal(t, resp.StatusCode, 200)
+	assert.Equal(t, respBody["message"], "success")
+
+}
+
+func testServerLoginUserFailure(user *sessionmgmt.User, t *testing.T) {
+	var (
+		err error
+	)
+	loginRequest := &LoginRequest{
+		Username: user.Username,
+		Password: "dummy",
+	}
+	// Create the user
+	resp, respBody, err := MakeRequest(
+		"POST",
+		"api/users/login",
+		loginRequest,
 	)
 	assert.Equal(t, err, nil)
 	assert.Equal(t, resp.StatusCode, 200)
@@ -76,8 +115,13 @@ func TestUserFlow(t *testing.T) {
 		Username: "goku",
 		Password: "password",
 	}
+	server, _ := GetServer(false)
+	server.Db.Exec("DELETE FROM users")
+
 	testServerAddUser(user, t)
 	testServerGetUser(user, t)
+	testServerLoginUserSuccess(user, t)
+	testServerLoginUserFailure(user, t)
 	testServerUpdateUser(user, t)
 	testServerDeleteUser(user, t)
 }
